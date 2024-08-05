@@ -1,4 +1,4 @@
-using Newtonsoft.Json;
+﻿using Newtonsoft.Json;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -290,7 +290,8 @@ namespace Msk
             #region Create Room
 
             /// <summary>
-            /// Try creating room. Room name must be unique since master server distinguish the room by its name. You can pass the room options for detail.
+            /// Try creating room. Room name must be unique since master server distinguish the room by its name. 
+            /// You can pass the room options for detail.
             /// </summary>
             /// <param name="roomName"></param>
             /// <param name="roomOptions"></param>
@@ -385,7 +386,8 @@ namespace Msk
 
             private static void JoinRoomInternal(string roomName, string password)
             {
-                using (Packet packet = new Packet(string.IsNullOrEmpty(roomName) ? (int)OpRequest.JoinRandomRoom : (int)OpRequest.JoinRoom))
+                using (Packet packet = new Packet(string.IsNullOrEmpty(roomName) ? 
+                    (int)OpRequest.JoinRandomRoom : (int)OpRequest.JoinRoom))
                 {
                     packet.Write(Version);
                     packet.Write(roomName);
@@ -707,7 +709,8 @@ namespace Msk
             }
 
             /// <summary>
-            /// Kick player from a room. If reason is provided, it will be notified to other players including kicked player.
+            /// Kick player from a room. If reason is provided, 
+            /// it will be notified to other players including kicked player.
             /// </summary>
             /// <param name="player"></param>
             /// <param name="reason"></param>
@@ -894,7 +897,8 @@ namespace Msk
             }
 
             /// <summary>
-            /// Get players count in current lobby. If success, <see cref="onPlayerCountInLobbyFetched"/> will be invoked 
+            /// Get players count in current lobby. If success, 
+            /// <see cref="onPlayerCountInLobbyFetched"/> will be invoked 
             /// and <see cref="PlayerCountInLobby"/> will be set.
             /// </summary>
             public static void FetchPlayerCountInLobby()
