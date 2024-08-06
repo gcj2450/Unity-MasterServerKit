@@ -192,7 +192,7 @@ namespace Msk
                     "| |  | || | | |/\\__/ /  | |  | |___ | |\\ \\  /\\__/ /| |___ | |\\ \\ \\ \\_/ /| |___ | |\\ \\  | |\\  \\ _| |_   | |  \n" +
                     "\\_|  |_/\\_| |_/\\____/   \\_/  \\____/ \\_| \\_| \\____/ \\____/ \\_| \\_| \\___/ \\____/ \\_| \\_| \\_| \\_/ \\___/   \\_/  \n");
 
-                Console.WriteLine("-> Connecting to Master Server.");
+                Debug.Log("-> Connecting to Master Server.");
             }
 
             /// <summary>
@@ -214,7 +214,14 @@ namespace Msk
 
                 string ip = m_args.GetString("masterIp");
                 ushort port = (ushort)m_args.GetShort("masterPort");
-
+                if (string.IsNullOrEmpty(ip))
+                {
+                    ip = "127.0.0.1";
+                }
+                if (port==0)
+                {
+                    port = 20000;
+                }
                 Socket.Connect(ip, port);
 
                 Console.Write("" +
@@ -224,7 +231,7 @@ namespace Msk
                     "| |\\/| ||  _  | `--. \\  | |  |  __| |    /   `--. \\|  __| |    / | | | ||  __| |    /  |    \\   | |    | |  \n" +
                     "| |  | || | | |/\\__/ /  | |  | |___ | |\\ \\  /\\__/ /| |___ | |\\ \\ \\ \\_/ /| |___ | |\\ \\  | |\\  \\ _| |_   | |  \n" +
                     "\\_|  |_/\\_| |_/\\____/   \\_/  \\____/ \\_| \\_| \\____/ \\____/ \\_| \\_| \\___/ \\____/ \\_| \\_| \\_| \\_/ \\___/   \\_/  \n");
-                Console.WriteLine("-> Connecting to Master Server.");
+                Debug.Log("-> Connecting to Master Server.");
             }
 
             private static void OnClientAcceptedOnMaster(MskSocket client, Packet packet)
@@ -252,7 +259,7 @@ namespace Msk
 
                 Socket.ClientId = id;
 
-                Console.WriteLine($"-> Connected to Master Server on {m_args.GetString("masterIp")}:{m_args.GetString("masterPort")}");
+                Debug.Log($"-> Connected to Master Server on {m_args.GetString("masterIp")}:{m_args.GetString("masterPort")}");
 
                 MskInstanceMono.StartTtlFirstPlayerRoutine();
                 MskInstanceMono.StartTtlEmptyRoomRoutine();
@@ -266,7 +273,7 @@ namespace Msk
             {
                 OpError opError = (OpError)packet.ReadInt();
 
-                Console.WriteLine($"-> Connect to lobby failed : {opError}");
+                Debug.Log($"-> Connect to lobby failed : {opError}");
                 onConnectToMasterFailed?.Invoke(opError);
 
                 Application.Quit();
@@ -287,7 +294,7 @@ namespace Msk
 
             private static void OnDisconnectedFromMaster(MskSocket socket)
             {
-                Console.WriteLine($"-> Disconnected from Master Server.");
+                Debug.Log($"-> Disconnected from Master Server.");
                 Application.Quit();
             }
 
@@ -331,7 +338,7 @@ namespace Msk
             {
                 IsRoomRegistered = true;
 
-                Console.WriteLine("-> Room has been successfully registered.");
+                Debug.Log("-> Room has been successfully registered.");
                 onRoomRegistered?.Invoke();
             }
 
@@ -492,25 +499,25 @@ namespace Msk
                 {
                     Room.IsPrivate = packet.ReadBool();
                     onRoomPropertiesUpdated?.Invoke(op);
-                    Console.WriteLine($"-> Room is set to IsPrivate = {Room.IsPrivate}");
+                    Debug.Log($"-> Room is set to IsPrivate = {Room.IsPrivate}");
                 }
                 else if (op == OpRoomProperties.ChangeOpen)
                 {
                     Room.IsOpen = packet.ReadBool();
                     onRoomPropertiesUpdated?.Invoke(op);
-                    Console.WriteLine($"-> Room is set to IsOpen = {Room.IsOpen}");
+                    Debug.Log($"-> Room is set to IsOpen = {Room.IsOpen}");
                 }
                 else if (op == OpRoomProperties.ChangeMaxPlayers)
                 {
                     Room.MaxPlayers = packet.ReadInt();
                     onRoomPropertiesUpdated?.Invoke(op);
-                    Console.WriteLine($"-> Room is set to MaxPlayers = {Room.MaxPlayers}");
+                    Debug.Log($"-> Room is set to MaxPlayers = {Room.MaxPlayers}");
                 }
                 else if (op == OpRoomProperties.ChangePassword)
                 {
                     Room.IsPasswordLock = packet.ReadBool();
                     onRoomPropertiesUpdated?.Invoke(op);
-                    Console.WriteLine($"-> Room is set to IsPasswordLock = {Room.IsPasswordLock}");
+                    Debug.Log($"-> Room is set to IsPasswordLock = {Room.IsPasswordLock}");
                 }
                 else if (op == OpRoomProperties.UpdateCustomProperties)
                 {
@@ -518,7 +525,7 @@ namespace Msk
                     MskProperties mskProperties = MskProperties.Deserialize(json);
                     Room.CustomProperties.Append(mskProperties);
 
-                    Console.WriteLine($"-> Room's custom properties updated. {json}");
+                    Debug.Log($"-> Room's custom properties updated. {json}");
 
                     onRoomPropertiesUpdated?.Invoke(op);
                     onRoomCustomPropertiesUpdated?.Invoke(mskProperties);
@@ -562,7 +569,7 @@ namespace Msk
                 MskPlayer player = Room.Players[clientId];
                 Room.MasterId = clientId;
 
-                Console.WriteLine($"-> Master is changed from [{prevMaster?.ClientId}] to [{player.ClientId}]");
+                Debug.Log($"-> Master is changed from [{prevMaster?.ClientId}] to [{player.ClientId}]");
                 onMasterChanged?.Invoke(prevMaster, player);
             }
 
@@ -579,7 +586,7 @@ namespace Msk
 
                 Room.Players.Add(player.ClientId, player);  
 
-                Console.WriteLine($"-> Player[{player.ClientId}] joined room");
+                Debug.Log($"-> Player[{player.ClientId}] joined room");
                 onPlayerJoined?.Invoke(player);
             }
 
@@ -590,7 +597,7 @@ namespace Msk
                 MskPlayer player = Room.Players[clientId];
                 Room.Players.Remove(player.ClientId);
 
-                Console.WriteLine($"-> Player[{player.ClientId}] left room");
+                Debug.Log($"-> Player[{player.ClientId}] left room");
                 onPlayerLeft?.Invoke(player);
             }
 
@@ -637,7 +644,7 @@ namespace Msk
                 MskPlayer player = Room.FindPlayer(playerId);
                 if (player != null)
                 {
-                    Console.WriteLine($"-> Player[{player.ClientId}] kicked from room");
+                    Debug.Log($"-> Player[{player.ClientId}] kicked from room");
                     onPlayerKicked?.Invoke(player, reason);
                 }
             }
@@ -699,16 +706,16 @@ namespace Msk
                         Room.Players[clientId].CustomProperties.Append(props);
                         onPlayerCustomPropertiesUpdated?.Invoke(Room.Players[clientId], props);
 
-                        Console.WriteLine($"-> Player[{clientId}]'s custom properties updated. {json}");
+                        Debug.Log($"-> Player[{clientId}]'s custom properties updated. {json}");
                     }
                     else
                     {
-                        Console.WriteLine($"-> Cannot update Player[{clientId}]'s custom properties({json}). Player not found.");
+                        Debug.Log($"-> Cannot update Player[{clientId}]'s custom properties({json}). Player not found.");
                     }
                 }
                 else
                 {
-                    Console.WriteLine($"-> Cannot update Player[{clientId}]'s custom properties({json}). Room not found.");
+                    Debug.Log($"-> Cannot update Player[{clientId}]'s custom properties({json}). Room not found.");
                 }
             }
 

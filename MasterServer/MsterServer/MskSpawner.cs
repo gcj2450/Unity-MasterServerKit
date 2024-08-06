@@ -238,7 +238,7 @@ namespace Msk.Master
         public static void RequestCreateRoom(MskSocket client, string version, string roomName, string roomOptions,
             RequestHandlerBase requestHandlerBase = null)
         {
-            try
+            //try
             {
                 SpawnRequest spawnRequest = FindSpawnRequest(version, roomName);
 
@@ -325,11 +325,11 @@ namespace Msk.Master
 
                 requestHandlerBase?.Invoke(true, OpError.Success);
             }
-            catch
-            {
-                Console.WriteLine("-> Error : Create room instance failed. Internal error");
-                requestHandlerBase(false, OpError.InternalError);
-            }
+            //catch
+            //{
+            //    Console.WriteLine("-> Error : Create room instance failed. Internal error");
+            //    requestHandlerBase(false, OpError.InternalError);
+            //}
         }
 
 

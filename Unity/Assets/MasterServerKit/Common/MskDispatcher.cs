@@ -70,6 +70,7 @@ namespace Msk
                     try
                     {
                         Action callback = m_callbacks.Dequeue();
+                        Debug.Log($"callback==null:{(callback == null)}");
                         callback?.Invoke();
                     }
                     catch (Exception e)
